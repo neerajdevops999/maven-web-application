@@ -29,7 +29,7 @@ node
     sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@13.126.173.214:/opt/apache-tomcat-9.0.54/webapps/"
   }
   }
-  
+  /*
   satge('SendEmailNotification')
  {
     mail bcc: '', body: '''Build Over 
@@ -38,4 +38,6 @@ node
     Neeraj Jr Devops Enginner''', cc: 'k08pradeep@gmail.com', from: '', replyTo: '', subject: 'Build Over', to: 'neerajsai316@gmail.com'
  }
  
+ */
+    
 }
