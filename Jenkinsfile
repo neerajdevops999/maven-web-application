@@ -1,75 +1,43 @@
-pipeline{
-
-agent any
-
-tools{
-maven 'maven3.8.2'
-
-}
-
-triggers{
-pollSCM('* * * * *')
-}
-
-options{
-timestamps()
-buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5'))
-}
-
-stages{
-
-  stage('CheckOutCode'){
-    steps{
-    git branch: 'development', credentialsId: '957b543e-6f77-4cef-9aec-82e9b0230975', url: 'https://github.com/devopstrainingblr/maven-web-application-1.git'
-	
-	}
+node
+{
+    def mavenHome=tool name: "maven3.8.3"
+    properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '3', daysToKeepStr: '', numToKeepStr: '3')), pipelineTriggers([pollSCM('* * * * *')])])
+    
+    stage('Checkout')
+  {  
+     git branch: 'development', credentialsId: 'd239ee77-52c1-4671-8079-94c19d5c7500', url: 'https://github.com/neerajdevops999/maven-web-application.git'
+  } 
+ 
+   stage('Build')
+  {
+    sh "${mavenHome}/bin/mvn clean package"
+  } 
+  
+   stage ('ExecuteSonarQubeReport')
+  {
+    sh "${mavenHome}/bin/mvn sonar:sonar"
   }
   
-  stage('Build'){
-  steps{
-  sh  "mvn clean package"
+   stage ('UploadArtifactIntoNexus')
+  {
+    sh "${mavenHome}/bin/mvn deploy"
   }
-  }
-/*
- stage('ExecuteSonarQubeReport'){
-  steps{
-  sh  "mvn clean sonar:sonar"
+  /*
+   stage('DeployAppIntoTomcat')
+  {
+    sshagent(['5d792433-e511-4f5c-a82f-8a9cd1d383a3'])
+  {
+    sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@13.126.173.214:/opt/apache-tomcat-9.0.54/webapps/"
   }
   }
   
-  stage('UploadArtifactsIntoNexus'){
-  steps{
-  sh  "mvn clean deploy"
-  }
-  }
-  
-  stage('DeployAppIntoTomcat'){
-  steps{
-  sshagent(['bfe1b3c1-c29b-4a4d-b97a-c068b7748cd0']) {
-   sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@35.154.190.162:/opt/apache-tomcat-9.0.50/webapps/"    
-  }
-  }
-  }
-  */
-}//Stages Closing
-
-post{
-
- success{
- emailext to: 'devopstrainingblr@gmail.com,mithuntechnologies@yahoo.com',
-          subject: "Pipeline Build is over .. Build # is ..${env.BUILD_NUMBER} and Build status is.. ${currentBuild.result}.",
-          body: "Pipeline Build is over .. Build # is ..${env.BUILD_NUMBER} and Build status is.. ${currentBuild.result}.",
-          replyTo: 'devopstrainingblr@gmail.com'
+  satge('SendEmailNotification')
+ {
+    mail bcc: '', body: '''Build Over 
+    Regars
+    Neeraj Jr Devops Enginner''', cc: 'k08pradeep@gmail.com', from: '', replyTo: '', subject: 'Build Over', to: 'neerajsai316@gmail.com'
  }
  
- failure{
- emailext to: 'devopstrainingblr@gmail.com,mithuntechnologies@yahoo.com',
-          subject: "Pipeline Build is over .. Build # is ..${env.BUILD_NUMBER} and Build status is.. ${currentBuild.result}.",
-          body: "Pipeline Build is over .. Build # is ..${env.BUILD_NUMBER} and Build status is.. ${currentBuild.result}.",
-          replyTo: 'devopstrainingblr@gmail.com'
- }
- 
+ */
+    
 }
-
-
-}//Pipeline closing
