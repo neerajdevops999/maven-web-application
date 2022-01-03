@@ -99,13 +99,13 @@
 	    <repository>
 	      <id>nexus</id>
 	      <name>Mithun Technologies Releases Nexus Repository</name>
-	      <url>http://13.233.216.204:9981/neerajdevops/repository/paytm-release/</url>
+	      <url>http://15.206.69.18:9981/neerajdevops/repository/paytm-release/</url>
 	    </repository>
 	    
 	    <snapshotRepository>
 	      <id>nexus</id>
 	      <name>Mithun Technologies Snapshot Nexus Repository </name>
-	      <url>http://13.233.216.204:9981/neerajdevops/repository/paytm-snapshot/</url>
+	      <url>http://15.206.69.18:9981/neerajdevops/repository/paytm-snapshot/</url>
 	    </snapshotRepository>
 	    
 	</distributionManagement>
